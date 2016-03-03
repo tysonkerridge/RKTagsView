@@ -4,6 +4,8 @@ Highly customizable iOS tags view (like NSTokenField). Supports editing, multipl
 
 ![sample gif](https://raw.githubusercontent.com/kuler90/RKTagsView/master/sample.gif)
 
+Note: You can use tagsView tintColor for changing tags color. 
+
 ## Demo
 
 Click [here](https://appetize.io/app/wbhb09eha4b44zn19nnypbkprc) for Live Preview.
