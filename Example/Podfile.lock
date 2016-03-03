@@ -1,0 +1,14 @@
+PODS:
+  - RKTagsView (1.0.0)
+
+DEPENDENCIES:
+  - RKTagsView (from `../`)
+
+EXTERNAL SOURCES:
+  RKTagsView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  RKTagsView: bc4c5fe042352b236fb502806067c153bd6b00f6
+
+COCOAPODS: 0.39.0
