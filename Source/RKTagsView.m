@@ -173,21 +173,18 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
     }
     [self setOriginalFrame:textfieldFrame forView:self.inputTextField];
   }
-  // layout becomeFirstResponder button
-  CGRect becomeFirstResponderButtonFrame = CGRectZero;
-  becomeFirstResponderButtonFrame.size.width = contentWidth;
-  becomeFirstResponderButtonFrame.size.height = CGRectGetMaxY(lowerFrame);
-  self.becomeFirstResponderButton.frame = becomeFirstResponderButtonFrame;
-  [self.scrollView bringSubviewToFront:self.becomeFirstResponderButton];
   // set content size
   CGSize oldContentSize = self.contentSize;
-  self.scrollView.contentSize = becomeFirstResponderButtonFrame.size;
+  self.scrollView.contentSize = CGSizeMake(contentWidth, CGRectGetMaxY(lowerFrame));
   if (oldContentSize.height != self.contentSize.height) {
     [self invalidateIntrinsicContentSize];
     if ([self.delegate respondsToSelector:@selector(tagsViewContentSizeDidChange:)]) {
       [self.delegate tagsViewContentSizeDidChange:self];
     }
   }
+  // layout becomeFirstResponder button
+  self.becomeFirstResponderButton.frame = CGRectMake(-self.scrollView.contentInset.left, -self.scrollView.contentInset.top, self.contentSize.width, self.contentSize.height);
+  [self.scrollView bringSubviewToFront:self.becomeFirstResponderButton];
 }
 
 - (CGSize)intrinsicContentSize {
