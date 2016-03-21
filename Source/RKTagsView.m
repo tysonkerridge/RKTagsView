@@ -453,6 +453,9 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
         continue;
       }
       [self removeTagAtIndex:tagIndexes[i].integerValue];
+      if ([self.delegate respondsToSelector:@selector(tagsViewDidChange:)]) {
+        [self.delegate tagsViewDidChange:self];
+      }
     }
     return NO;
   } else if ([self.inputTextField.text isEqualToString:@""] && self.mutableTags.count > 0) {
@@ -469,6 +472,9 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
         return NO;
       } else {
         [self removeTagAtIndex:lastTagIndex];
+        if ([self.delegate respondsToSelector:@selector(tagsViewDidChange:)]) {
+          [self.delegate tagsViewDidChange:self];
+        }
         return NO;
       }
     }
