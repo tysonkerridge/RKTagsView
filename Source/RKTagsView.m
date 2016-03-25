@@ -303,6 +303,15 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
 
 #pragma mark Public
 
+- (NSInteger)indexForTagAtScrollViewPoint:(CGPoint)point {
+  for (int index = 0; index < self.mutableTagButtons.count; index++) {
+    if (CGRectContainsPoint(self.mutableTagButtons[index].frame, point)) {
+      return index;
+    }
+  }
+  return NSNotFound;
+}
+
 - (nullable __kindof UIButton *)buttonForTagAtIndex:(NSInteger)index {
   if (index >= 0 && index < self.mutableTagButtons.count) {
     return self.mutableTagButtons[index];
@@ -349,6 +358,21 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
     [self.mutableTagButtons insertObject:tagButton atIndex:index];
     [self.scrollView addSubview:tagButton];
     [self setNeedsLayout];
+  }
+}
+
+- (void)moveTagAtIndex:(NSInteger)index toIndex:(NSInteger)newIndex {
+  if (index >= 0 && index <= self.mutableTags.count
+      && newIndex >= 0 && newIndex <= self.mutableTags.count
+      && index != newIndex) {
+    NSString *tag = self.mutableTags[index];
+    UIButton *button = self.mutableTagButtons[index];
+    [self.mutableTags removeObjectAtIndex:index];
+    [self.mutableTagButtons removeObjectAtIndex:index];
+    [self.mutableTags insertObject:tag atIndex:newIndex];
+    [self.mutableTagButtons insertObject:button atIndex:newIndex];
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
   }
 }
 
