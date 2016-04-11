@@ -90,6 +90,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   _tagButtonHeight = RKTagsViewAutomaticDimension;
   _textFieldHeight = RKTagsViewAutomaticDimension;
   _textFieldAlign = RKTagsViewTextFieldAlignCenter;
+  _deliminater = [NSCharacterSet whitespaceCharacterSet];
 }
 
 #pragma mark Layout
@@ -431,7 +432,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   if (self.deselectAllOnEdit) {
     [self deselectAll];
   }
-  NSMutableArray *tags = [[(self.inputTextField.text ?: @"") componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] mutableCopy];
+  NSMutableArray *tags = [[(self.inputTextField.text ?: @"") componentsSeparatedByCharactersInSet:self.deliminater] mutableCopy];
   self.inputTextField.text = [tags lastObject];
   [tags removeLastObject];
   for (NSString *tag in tags) {
