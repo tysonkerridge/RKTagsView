@@ -50,6 +50,8 @@ typedef NS_ENUM(NSInteger, RKTagsViewTextFieldAlign) { // align is relative to a
 @property (nonatomic) CGFloat textFieldHeight; // default is auto
 @property (nonatomic) RKTagsViewTextFieldAlign textFieldAlign; // default is center
 
+@property (nonatomic, strong) NSCharacterSet* deliminater; // defailt is [NSCharacterSet whitespaceCharacterSet]
+
 - (NSInteger)indexForTagAtScrollViewPoint:(CGPoint)point; // NSNotFound if not found
 - (nullable __kindof UIButton *)buttonForTagAtIndex:(NSInteger)index;
 - (void)reloadButtons;
