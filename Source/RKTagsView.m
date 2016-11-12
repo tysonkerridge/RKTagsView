@@ -269,6 +269,13 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   }
 }
 
+- (void)setScrollsHorizontally:(BOOL)scrollsHorizontally {
+  if (_scrollsHorizontally != scrollsHorizontally) {
+    _scrollsHorizontally = scrollsHorizontally;
+    [self setNeedsLayout];
+  }
+}
+
 - (void)setInteritemSpacing:(CGFloat)interitemSpacing {
   if (_interitemSpacing != interitemSpacing) {
     _interitemSpacing = interitemSpacing;

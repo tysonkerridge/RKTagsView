@@ -56,6 +56,11 @@
   [self.view layoutIfNeeded];
 }
 
+- (IBAction)scrollsHorizontallyChanged:(UISwitch *)sender {
+  self.tagsView.scrollsHorizontally = sender.on;
+  [self.view layoutIfNeeded];
+}
+
 - (IBAction)interitemSpacingChanged:(UIStepper *)sender {
   self.tagsView.interitemSpacing = sender.value;
   self.interitemSpacingCountLabel.text = [NSString stringWithFormat:@"%0.0f", sender.value];
