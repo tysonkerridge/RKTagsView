@@ -43,6 +43,7 @@ typedef NS_ENUM(NSInteger, RKTagsViewTextFieldAlign) { // align is relative to a
 @property (nonatomic) BOOL selectBeforeRemoveOnDeleteBackward; // default is YES
 @property (nonatomic) BOOL deselectAllOnEdit; // default is YES
 @property (nonatomic) BOOL deselectAllOnEndEditing; // default is YES
+@property (nonatomic) BOOL scrollsHorizontally; // default is NO
 
 @property (nonatomic) CGFloat lineSpacing; // default is 2
 @property (nonatomic) CGFloat interitemSpacing; // default is 2
