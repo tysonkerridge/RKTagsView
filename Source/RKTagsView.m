@@ -91,6 +91,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   _textFieldHeight = RKTagsViewAutomaticDimension;
   _textFieldAlign = RKTagsViewTextFieldAlignCenter;
   _deliminater = [NSCharacterSet whitespaceCharacterSet];
+  _scrollsHorizontally = NO;
 }
 
 #pragma mark Layout
@@ -103,12 +104,15 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   CGRect previousButtonFrame = CGRectZero;
   for (UIButton *button in self.mutableTagButtons) {
     CGRect buttonFrame = [self originalFrameForView:button];
-    if (CGRectGetMaxX(previousButtonFrame) + self.interitemSpacing + buttonFrame.size.width <= contentWidth) {
+    if (_scrollsHorizontally || (CGRectGetMaxX(previousButtonFrame) + self.interitemSpacing + buttonFrame.size.width <= contentWidth)) {
       buttonFrame.origin.x = CGRectGetMaxX(previousButtonFrame);
       if (buttonFrame.origin.x > 0) {
         buttonFrame.origin.x += self.interitemSpacing;
       }
       buttonFrame.origin.y = CGRectGetMinY(previousButtonFrame);
+      if (_scrollsHorizontally && CGRectGetMaxX(buttonFrame) > self.bounds.size.width) {
+        contentWidth = CGRectGetMaxX(buttonFrame) + self.interitemSpacing;
+      }
     } else {
       buttonFrame.origin.x = 0;
       buttonFrame.origin.y = MAX(CGRectGetMaxY(lowerFrame), CGRectGetMaxY(previousButtonFrame));
@@ -140,7 +144,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
       textfieldFrame.origin.y = 0;
       textfieldFrame.size.width = contentWidth;
       lowerFrame = textfieldFrame;
-    } else if (CGRectGetMaxX(previousButtonFrame) + self.interitemSpacing + textfieldFrame.size.width <= contentWidth) {
+    } else if (_scrollsHorizontally || (CGRectGetMaxX(previousButtonFrame) + self.interitemSpacing + textfieldFrame.size.width <= contentWidth)) {
       textfieldFrame.origin.x = self.interitemSpacing + CGRectGetMaxX(previousButtonFrame);
       switch (self.textFieldAlign) {
         case RKTagsViewTextFieldAlignTop:
@@ -152,7 +156,14 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
         case RKTagsViewTextFieldAlignBottom:
           textfieldFrame.origin.y = CGRectGetMinY(previousButtonFrame) + (previousButtonFrame.size.height - textfieldFrame.size.height);
       }
-      textfieldFrame.size.width = contentWidth - textfieldFrame.origin.x;
+      if (_scrollsHorizontally) {
+        textfieldFrame.size.width = self.inputTextField.bounds.size.width;
+        if (CGRectGetMaxX(textfieldFrame) > self.bounds.size.width) {
+          contentWidth += textfieldFrame.size.width;
+        }
+      } else {
+        textfieldFrame.size.width = contentWidth - textfieldFrame.origin.x;
+      }
       if (CGRectGetMaxY(lowerFrame) < CGRectGetMaxY(textfieldFrame)) {
         lowerFrame = textfieldFrame;
       }
@@ -177,7 +188,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   // set content size
   CGSize oldContentSize = self.contentSize;
   self.scrollView.contentSize = CGSizeMake(contentWidth, CGRectGetMaxY(lowerFrame));
-  if (oldContentSize.height != self.contentSize.height) {
+  if ((_scrollsHorizontally && contentWidth > self.bounds.size.width) || (!_scrollsHorizontally && oldContentSize.height != self.contentSize.height)) {
     [self invalidateIntrinsicContentSize];
     if ([self.delegate respondsToSelector:@selector(tagsViewContentSizeDidChange:)]) {
       [self.delegate tagsViewContentSizeDidChange:self];
@@ -231,7 +242,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
 }
 
 - (CGSize)contentSize {
-  return CGSizeMake(self.bounds.size.width, self.scrollView.contentSize.height + self.scrollView.contentInset.top + self.scrollView.contentInset.bottom);
+  return CGSizeMake(_scrollsHorizontally ? (self.scrollView.contentSize.width + self.scrollView.contentInset.left + self.scrollView.contentInset.right) : self.bounds.size.width, self.scrollView.contentSize.height + self.scrollView.contentInset.top + self.scrollView.contentInset.bottom);
 }
 
 - (void)setEditable:(BOOL)editable {
@@ -251,14 +262,21 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   [self setNeedsLayout];
 }
 
--(void)setLineSpacing:(CGFloat)lineSpacing {
+- (void)setLineSpacing:(CGFloat)lineSpacing {
   if (_lineSpacing != lineSpacing) {
     _lineSpacing = lineSpacing;
     [self setNeedsLayout];
   }
 }
 
--(void)setInteritemSpacing:(CGFloat)interitemSpacing {
+- (void)setScrollsHorizontally:(BOOL)scrollsHorizontally {
+  if (_scrollsHorizontally != scrollsHorizontally) {
+    _scrollsHorizontally = scrollsHorizontally;
+    [self setNeedsLayout];
+  }
+}
+
+- (void)setInteritemSpacing:(CGFloat)interitemSpacing {
   if (_interitemSpacing != interitemSpacing) {
     _interitemSpacing = interitemSpacing;
     [self setNeedsLayout];
@@ -448,9 +466,16 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   [self layoutIfNeeded];
   // scroll if needed
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    if (self.scrollView.contentSize.height > self.bounds.size.height) {
-      CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.bounds.size.height);
-      [self.scrollView setContentOffset:bottomOffset animated:YES];
+    if (_scrollsHorizontally) {
+      if (self.scrollView.contentSize.width > self.bounds.size.width) {
+        CGPoint leftOffset = CGPointMake(self.scrollView.contentSize.width - self.bounds.size.width, -self.scrollView.contentInset.top);
+        [self.scrollView setContentOffset:leftOffset animated:YES];
+      }
+    } else {
+      if (self.scrollView.contentInset.top + self.scrollView.contentSize.height > self.bounds.size.height) {
+        CGPoint bottomOffset = CGPointMake(-self.scrollView.contentInset.left, self.scrollView.contentSize.height - self.bounds.size.height - (-self.scrollView.contentInset.top));
+        [self.scrollView setContentOffset:bottomOffset animated:YES];
+      }
     }
   });
 }
