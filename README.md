@@ -1,6 +1,6 @@
 # RKTagsView
 
-Highly customizable iOS tags view (like NSTokenField). Supports editing, multiple selection, Auto Layout and much more.
+Highly customizable iOS tags view (like NSTokenField). Supports horizontal and vertical direction, editing, multiple selection, Auto Layout and much more.
 
 ![sample gif](https://raw.githubusercontent.com/kuler90/RKTagsView/master/sample.gif)
 

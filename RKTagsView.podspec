@@ -5,8 +5,8 @@
 
 Pod::Spec.new do |s|
   s.name             = "RKTagsView"
-  s.version          = "1.2.0"
-  s.summary          = "Highly customizable iOS tags view (like NSTokenField). Supports editing, multiple selection, Auto Layout and much more."
+  s.version          = "1.3.0"
+  s.summary          = "Highly customizable iOS tags view (like NSTokenField)."
   s.homepage         = "https://github.com/kuler90/RKTagsView"
   s.screenshots      = "https://raw.githubusercontent.com/kuler90/RKTagsView/master/sample.gif"
   s.license          = 'MIT'
