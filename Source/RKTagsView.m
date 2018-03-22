@@ -451,7 +451,8 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
     [self deselectAll];
   }
   NSMutableArray *tags = [[(self.inputTextField.text ?: @"") componentsSeparatedByCharactersInSet:self.deliminater] mutableCopy];
-  self.inputTextField.text = [tags lastObject];
+  if (![_inputTextField.text isEqualToString:tags.lastObject]) // Fix for Korean language - https://github.com/kuler90/RKTagsView/pull/19
+      self.inputTextField.text = [tags lastObject];
   [tags removeLastObject];
   for (NSString *tag in tags) {
     if ([tag isEqualToString:@""] || ([self.delegate respondsToSelector:@selector(tagsView:shouldAddTagWithText:)] && ![self.delegate tagsView:self shouldAddTagWithText:tag])) {
