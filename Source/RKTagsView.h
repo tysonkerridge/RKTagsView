@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, RKTagsViewTextFieldAlign) { // align is relative to a
 
 @end
 
+IB_DESIGNABLE
 @interface RKTagsView: UIView
 
 @property (nonatomic, strong, readonly) UIScrollView *scrollView; // scrollView delegate is not used
@@ -37,18 +38,18 @@ typedef NS_ENUM(NSInteger, RKTagsViewTextFieldAlign) { // align is relative to a
 @property (nonatomic, readonly) CGSize contentSize;
 
 @property (nonatomic, strong) UIFont *font; // default is font from textfield
-@property (nonatomic) BOOL editable; // default is YES
-@property (nonatomic) BOOL selectable; // default is YES
-@property (nonatomic) BOOL allowsMultipleSelection; // default is YES
-@property (nonatomic) BOOL selectBeforeRemoveOnDeleteBackward; // default is YES
-@property (nonatomic) BOOL deselectAllOnEdit; // default is YES
-@property (nonatomic) BOOL deselectAllOnEndEditing; // default is YES
-@property (nonatomic) BOOL scrollsHorizontally; // default is NO
+@property (nonatomic) IBInspectable BOOL editable; // default is YES
+@property (nonatomic) IBInspectable BOOL selectable; // default is YES
+@property (nonatomic) IBInspectable BOOL allowsMultipleSelection; // default is YES
+@property (nonatomic) IBInspectable BOOL selectBeforeRemoveOnDeleteBackward; // default is YES
+@property (nonatomic) IBInspectable BOOL deselectAllOnEdit; // default is YES
+@property (nonatomic) IBInspectable BOOL deselectAllOnEndEditing; // default is YES
+@property (nonatomic) IBInspectable BOOL scrollsHorizontally; // default is NO
 
-@property (nonatomic) CGFloat lineSpacing; // default is 2
-@property (nonatomic) CGFloat interitemSpacing; // default is 2
-@property (nonatomic) CGFloat tagButtonHeight; // default is auto
-@property (nonatomic) CGFloat textFieldHeight; // default is auto
+@property (nonatomic) IBInspectable CGFloat lineSpacing; // default is 2
+@property (nonatomic) IBInspectable CGFloat interitemSpacing; // default is 2
+@property (nonatomic) IBInspectable CGFloat tagButtonHeight; // default is auto
+@property (nonatomic) IBInspectable CGFloat textFieldHeight; // default is auto
 @property (nonatomic) RKTagsViewTextFieldAlign textFieldAlign; // default is center
 
 @property (nonatomic, strong) NSCharacterSet* deliminater; // defailt is [NSCharacterSet whitespaceCharacterSet]
