@@ -90,6 +90,7 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
   _tagButtonHeight = RKTagsViewAutomaticDimension;
   _textFieldHeight = RKTagsViewAutomaticDimension;
   _textFieldAlign = RKTagsViewTextFieldAlignCenter;
+  _maxTagLength = 0;
   _deliminater = [NSCharacterSet whitespaceCharacterSet];
   _scrollsHorizontally = NO;
 }
@@ -451,14 +452,38 @@ const CGFloat RKTagsViewAutomaticDimension = -0.0001;
     [self deselectAll];
   }
   NSMutableArray *tags = [[(self.inputTextField.text ?: @"") componentsSeparatedByCharactersInSet:self.deliminater] mutableCopy];
+  if (_maxTagLength > 0) {
+    NSMutableArray *newTags = [NSMutableArray new];
+    for (NSString *tag in tags) {
+      // Trim the tag to the max length and add a spacer so that we treat it as a tag if there's no other tags
+      if (tag.length >= _maxTagLength) {
+        [newTags addObject:[tag substringToIndex:_maxTagLength]];
+        [newTags addObject:@""];
+      } else {
+        [newTags addObject:tag];
+      }
+    }
+    tags = newTags;
+  }
   if (![_inputTextField.text isEqualToString:tags.lastObject]) // Fix for Korean language - https://github.com/kuler90/RKTagsView/pull/19
-      self.inputTextField.text = [tags lastObject];
+    self.inputTextField.text = [tags lastObject];
   [tags removeLastObject];
   for (NSString *tag in tags) {
-    if ([tag isEqualToString:@""] || ([self.delegate respondsToSelector:@selector(tagsView:shouldAddTagWithText:)] && ![self.delegate tagsView:self shouldAddTagWithText:tag])) {
+      
+    if ([tag isEqualToString:@""]) {
       continue;
     }
-    [self addTag:tag];
+    NSString *tagToAdd = tag;
+    if ([self.delegate respondsToSelector:@selector(tagsView:textForTagWithEnteredText:)]) {
+      tagToAdd = [self.delegate tagsView:self textForTagWithEnteredText:tag];
+      NSInteger length = tagToAdd.length;
+      if (length == 0) {
+        continue;
+      } else if (length > _maxTagLength) {
+        tagToAdd = [tagToAdd substringToIndex:_maxTagLength];
+      }
+    }
+    [self addTag:tagToAdd];
     if ([self.delegate respondsToSelector:@selector(tagsViewDidChange:)]) {
       [self.delegate tagsViewDidChange:self];
     }

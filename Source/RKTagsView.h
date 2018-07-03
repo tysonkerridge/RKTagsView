@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, RKTagsViewTextFieldAlign) { // align is relative to a
 @optional
 
 - (UIButton *)tagsView:(RKTagsView *)tagsView buttonForTagAtIndex:(NSInteger)index; // used default tag button if not implemented
-- (BOOL)tagsView:(RKTagsView *)tagsView shouldAddTagWithText:(NSString *)text; // called when 'space' key pressed. return NO to ignore tag
+- (NSString *)tagsView:(RKTagsView *)tagsView textForTagWithEnteredText:(NSString *)text; // called when deliminater entered or max tag length reached. Return empty string to ignore tag. Returning a string longer than max length will be trimmed.
 - (BOOL)tagsView:(RKTagsView *)tagsView shouldSelectTagAtIndex:(NSInteger)index; // called when tag pressed. return NO to disallow selecting tag
 - (BOOL)tagsView:(RKTagsView *)tagsView shouldDeselectTagAtIndex:(NSInteger)index; // called when selected tag pressed. return NO to disallow deselecting tag
 - (BOOL)tagsView:(RKTagsView *)tagsView shouldRemoveTagAtIndex:(NSInteger)index; // called when 'backspace' key pressed. return NO to disallow removing tag
@@ -52,7 +52,8 @@ IB_DESIGNABLE
 @property (nonatomic) IBInspectable CGFloat textFieldHeight; // default is auto
 @property (nonatomic) RKTagsViewTextFieldAlign textFieldAlign; // default is center
 
-@property (nonatomic, strong) NSCharacterSet* deliminater; // defailt is [NSCharacterSet whitespaceCharacterSet]
+@property (nonatomic) NSInteger maxTagLength; // default is 0 meaning unlimited and won't make any difference. Used as a second deliminater - will automatically create a tag once the length of text entered reaches the max length.
+@property (nonatomic, strong) NSCharacterSet* deliminater; // default is [NSCharacterSet whitespaceCharacterSet]
 
 - (NSInteger)indexForTagAtScrollViewPoint:(CGPoint)point; // NSNotFound if not found
 - (nullable __kindof UIButton *)buttonForTagAtIndex:(NSInteger)index;
